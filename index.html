@@ -1,0 +1,560 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1/8빡 수금소</title>
+<style>
+:root{
+  --ink:#3f3028;--muted:#806d61;--cream:#fbf6ed;--paper:#fffdf9;
+  --brown:#76513e;--brown2:#a67b60;--line:#e8dacc;--accent:#c96f58;
+  --ok:#6d8768;--shadow:0 12px 35px rgba(77,52,36,.10);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--cream);color:var(--ink);font-family:"Noto Sans KR","Malgun Gothic",sans-serif}
+button,textarea{font:inherit}
+.wrap{width:min(920px,calc(100% - 28px));margin:0 auto;padding:30px 0 50px}
+header{text-align:center;padding:24px 0 34px}
+.title-kicker{display:inline-block;font-size:12px;letter-spacing:.08em;color:var(--muted);padding:7px 13px;border:1px solid var(--line);border-radius:999px;background:#fff9f1;margin-bottom:13px}
+h1{font-family:"Noto Serif KR","Batang","바탕체",Georgia,"Times New Roman",serif;font-size:clamp(38px,7vw,60px);font-weight:700;margin:0;letter-spacing:-1.5px;line-height:1.05;white-space:nowrap}
+.subtitle{margin:18px 0 0;color:var(--muted);font-size:16px}
+.cat{font-size:120px;line-height:.9;margin:18px 0 14px}
+.header-rule{display:flex;align-items:center;justify-content:center;gap:13px;margin:17px auto 0;max-width:310px;color:#b28b72;font-size:20px;line-height:1}
+.header-rule i{height:1px;flex:1;background:var(--line)}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px;align-items:start}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:22px;box-shadow:var(--shadow)}
+ .writing-card{padding:22px 24px}
+.writing-top{display:grid;grid-template-columns:210px 125px minmax(300px,1fr);gap:20px;align-items:center;min-height:92px}
+.count-zone{width:210px;min-width:210px}
+.label{font-size:13px;color:var(--muted);margin-bottom:5px;white-space:nowrap}
+.count{display:flex;align-items:baseline;white-space:nowrap;font-variant-numeric:tabular-nums;font-size:38px;font-weight:800;letter-spacing:-1.5px;min-width:185px}
+.count span{display:inline-block;width:78px;text-align:right}
+.timer-zone{min-width:125px;width:125px}
+.timer-box{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:0;width:125px}
+.timer-label{font-size:11px;color:var(--muted);white-space:nowrap}
+.timer{font-variant-numeric:tabular-nums;font-size:25px;font-weight:800;margin:0 0 7px;white-space:nowrap;width:125px;letter-spacing:1.2px}
+.count small{font-size:15px;font-weight:600;color:var(--muted);margin-left:7px}
+.bar{height:10px;background:#f0e6db;border-radius:99px;overflow:hidden;margin:14px 0 18px}
+.bar>div{height:100%;width:0;background:var(--brown2);transition:width .2s}
+.message{min-height:38px;color:var(--brown);font-weight:700;line-height:1.6;margin:8px 2px 10px}
+.editor-title{margin-top:18px;margin-bottom:10px}
+.actions{display:grid;grid-template-columns:1.35fr .8fr .9fr;gap:8px;width:100%;min-width:0;padding-top:3px}
+button{border:0;border-radius:12px;padding:12px 18px;cursor:pointer;font-weight:800;min-height:44px}.actions button{width:100%;white-space:nowrap;padding:8px 10px;min-height:42px}
+.primary{background:var(--brown);color:white}.secondary{background:#f2e8dc;color:var(--ink)}.danger{background:#f4ddd6;color:#774438}
+button:disabled{opacity:.45;cursor:not-allowed}
+textarea{width:100%;min-height:350px;resize:vertical;border:1px solid var(--line);border-radius:16px;padding:17px;background:#fffefa;color:var(--ink);line-height:1.8;outline:none}
+textarea:focus{border-color:var(--brown2);box-shadow:0 0 0 3px rgba(166,123,96,.12)}
+.meta{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:9px 2px 0;color:var(--muted);font-size:13px}
+.section-title{font-weight:900;font-size:18px;margin:0 0 14px}
+.log{max-height:310px;overflow:auto}
+.row{display:grid;grid-template-columns:1fr auto auto;gap:12px;padding:12px 0;border-bottom:1px solid #f0e6db;align-items:center}
+.row:last-child{border-bottom:0}.date{font-weight:800}.sub{font-size:12px;color:var(--muted);margin-top:3px}
+.statgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.stat{background:#fbf5ec;border-radius:15px;padding:13px;min-width:0;overflow:hidden}.stat b{display:block;font-size:20px;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-variant-numeric:tabular-nums}
+.note{font-size:12px;color:var(--muted);line-height:1.7;margin-top:12px}
+.done{color:var(--ok)}
+.toggle{display:flex;justify-content:center;align-items:center;gap:7px;font-size:13px;color:var(--muted);margin:8px 0}
+@media(max-width:720px){
+  .grid{grid-template-columns:1fr}.sidebar{min-width:0;width:100%}.tabs{min-width:0}
+  .grid{grid-template-columns:1fr}.wrap{padding-top:18px}.card{padding:18px}
+  h1{white-space:normal}.writing-top{grid-template-columns:180px 105px minmax(0,1fr);gap:12px}
+  .count-zone{width:180px;min-width:180px}.count{font-size:34px;min-width:155px}.count span{width:64px}
+  .timer-zone{min-width:105px;width:105px}
+  .timer-box{width:105px}.timer{font-size:23px;width:105px;letter-spacing:1px;margin-bottom:7px}
+  .actions{grid-template-columns:1.3fr .75fr .8fr;gap:5px}
+  .actions button{font-size:12px;padding:10px 6px}
+  .row{grid-template-columns:1fr auto}.row .extra{grid-column:2}.statgrid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:560px){
+  .writing-top{grid-template-columns:1fr 105px;gap:12px}
+  .count-zone{width:auto;min-width:0}
+  .timer-zone{grid-column:2;grid-row:1}
+  .actions{grid-column:1 / -1;grid-row:2}
+}
+@media(max-width:430px){
+  .wrap{width:min(100% - 18px,920px)}
+  .title-cat{font-size:.5em;margin:0 .1em}
+  .count{font-size:34px}.count span{width:62px}
+  .timer{font-size:21px;letter-spacing:.8px;margin-bottom:6px}
+  .actions button{font-size:11px}
+  textarea{min-height:300px}
+}
+@media(max-width:430px){
+  .wrap{width:min(100% - 18px,920px)}
+  .title-cat{font-size:.5em;margin:0 .1em}
+  .timer{font-size:18px}
+  .actions button{font-size:11px}
+  textarea{min-height:300px}
+}
+
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:0;margin:18px 0 0;min-width:250px;position:relative;z-index:2}
+.tab{width:100%;min-width:0;background:#f2e8dc;color:var(--ink);border:1px solid var(--line);border-bottom:0;border-radius:14px 14px 0 0;padding:12px 10px;min-height:58px;line-height:1.25;word-break:keep-all;margin:0}.tab + .tab{border-left:0}.tab.active{background:var(--paper);position:relative;z-index:2}.tab:first-child{border-top-left-radius:14px}.tab:last-child{border-top-right-radius:14px}
+.tab.active{background:var(--paper);color:var(--brown);font-weight:900}
+.panel{display:none}.panel.active{display:block;border-top-left-radius:0;border-top-right-radius:0;margin-top:-1px;position:relative;z-index:1}
+.sidebar{min-width:0;width:300px}
+
+.praise{background:#fff5e8;border:1px solid #ead2b5;border-radius:16px;padding:14px 20px;margin:8px 0 14px;min-height:68px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:17px;font-weight:900;line-height:1.5;color:#5d3c2c;overflow-wrap:break-word}
+.completion-message{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;width:100%;white-space:normal;line-height:1.45}.completion-message span{display:block}.completion-message strong{color:var(--ok)}
+.praise.bump{animation:praiseBump .28s ease}
+@keyframes praiseBump{50%{transform:scale(1.025)}}
+.tribute-box{margin-top:12px;padding:14px;border-radius:15px;background:#fbf5ec;border:1px dashed var(--line)}
+.tribute-title{font-weight:900;margin-bottom:6px}.tribute-count{font-size:25px;font-weight:900}.tribute-detail{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}.tribute-detail span{display:flex;justify-content:space-between;gap:5px;background:#fffaf2;border-radius:10px;padding:9px;font-size:12px;color:var(--muted)}.tribute-detail b{color:var(--ink);font-size:13px;white-space:nowrap}
+.archive-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:9px;align-items:center;padding:13px 0;border-bottom:1px solid #f0e6db}.archive-row>*{min-width:0}
+.archive-row:last-child{border-bottom:0}
+.delete-record{padding:8px 10px;min-height:36px;font-size:12px}
+.empty{color:var(--muted);font-size:13px;padding:18px 0}
+.test-note{font-size:12px;color:var(--muted);line-height:1.6;margin-top:10px}
+
+.celebration{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;padding:20px}
+.celebration.show{display:flex}
+.celebration-backdrop{position:absolute;inset:0;background:rgba(63,48,40,.62);backdrop-filter:blur(4px)}
+.celebration-card{position:relative;width:min(560px,94vw);background:#fffaf2;border:2px solid #ead2b5;border-radius:28px;padding:34px 26px 28px;text-align:center;box-shadow:0 25px 80px rgba(45,28,20,.3);animation:celebrateIn .45s cubic-bezier(.2,1.35,.35,1)}
+.celebration-cats{font-size:48px;letter-spacing:8px;animation:catBounce .7s ease-in-out infinite alternate}
+.celebration-paws{font-size:24px;margin:6px 0;color:#a67b60;letter-spacing:8px}
+.celebration-title{font-size:clamp(30px,7vw,48px);font-weight:950;letter-spacing:-1.5px;color:#76513e;margin:8px 0 10px}
+.celebration-sub{font-size:17px;font-weight:800;line-height:1.6;color:#5d3c2c}
+.celebration-applause{font-size:34px;letter-spacing:5px;margin:18px 0 10px;animation:applause .55s ease-in-out infinite alternate}
+.celebration-line{font-size:13px;color:#806d61;margin-bottom:20px}
+.celebration-close{font-size:14px;padding:11px 18px}
+.celebration-burst{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.celebration-burst span{position:absolute;font-size:30px;opacity:0;animation:floatPaw 2.5s ease-out forwards}
+.celebration-burst span:nth-child(1){left:8%;top:72%;animation-delay:.05s}
+.celebration-burst span:nth-child(2){left:18%;top:22%;animation-delay:.15s}
+.celebration-burst span:nth-child(3){left:30%;top:78%;animation-delay:.25s}
+.celebration-burst span:nth-child(4){left:43%;top:18%;animation-delay:.35s}
+.celebration-burst span:nth-child(5){left:57%;top:76%;animation-delay:.45s}
+.celebration-burst span:nth-child(6){left:70%;top:20%;animation-delay:.55s}
+.celebration-burst span:nth-child(7){left:82%;top:72%;animation-delay:.65s}
+.celebration-burst span:nth-child(8){left:91%;top:30%;animation-delay:.75s}
+.celebration-burst span:nth-child(9){left:5%;top:38%;animation-delay:.85s}
+.celebration-burst span:nth-child(10){left:24%;top:55%;animation-delay:.95s}
+.celebration-burst span:nth-child(11){left:76%;top:54%;animation-delay:1.05s}
+.celebration-burst span:nth-child(12){left:88%;top:58%;animation-delay:1.15s}
+@keyframes celebrateIn{from{opacity:0;transform:scale(.7) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
+@keyframes catBounce{from{transform:translateY(0) rotate(-2deg)}to{transform:translateY(-7px) rotate(2deg)}}
+@keyframes applause{from{transform:scale(1)}to{transform:scale(1.07)}}
+@keyframes floatPaw{0%{opacity:0;transform:translateY(35px) scale(.6) rotate(-15deg)}20%{opacity:1}100%{opacity:0;transform:translateY(-190px) scale(1.2) rotate(18deg)}}
+@media(prefers-reduced-motion:reduce){
+  .celebration-card,.celebration-cats,.celebration-applause,.celebration-burst span{animation:none}
+  .celebration-burst span{display:none}
+}
+
+.archive-scroll{max-height:390px;overflow-y:auto;overflow-x:hidden;padding-right:5px;margin-right:-4px}
+.archive-scroll::-webkit-scrollbar{width:7px}
+.archive-scroll::-webkit-scrollbar-track{background:#f5ede4;border-radius:99px}
+.archive-scroll::-webkit-scrollbar-thumb{background:#c6a58e;border-radius:99px}
+.archive-scroll{scrollbar-width:thin;scrollbar-color:#c6a58e #f5ede4}
+
+.chart-box{margin-top:12px;padding:15px;border-radius:15px;background:#fffaf3;border:1px solid #eadfd3}
+.chart-heading{margin-bottom:10px}
+.chart-title{font-weight:900;font-size:15px;color:var(--ink)}
+.chart-caption{font-size:11px;color:var(--muted);line-height:1.5;margin-top:3px}
+.chart-wrap{width:100%;height:190px;position:relative;overflow:hidden}
+.chart-wrap svg{display:block;width:100%;height:100%;overflow:visible}
+.chart-grid{stroke:#eadfd3;stroke-width:1}
+.chart-axis-label{fill:#8a7668;font-size:9px;font-family:inherit}
+.chart-line{fill:none;stroke:#8b5e46;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.chart-area{fill:#b28b72;opacity:.10}
+.chart-dot{fill:#8b5e46;stroke:#fffaf3;stroke-width:3}
+.chart-empty{height:100%;display:flex;align-items:center;justify-content:center;text-align:center;color:var(--muted);font-size:12px;line-height:1.7}
+.stats-section-gap{height:12px}
+</style>
+</head>
+<body>
+
+<div class="celebration" id="celebration" aria-hidden="true">
+  <div class="celebration-backdrop"></div>
+  <div class="celebration-burst" aria-hidden="true">
+    <span>🐾</span><span>💗</span><span>😻</span><span>😽</span><span>😸</span><span>🐾</span><span>💖</span><span>😻</span><span>😽</span><span>🐾</span><span>😸</span><span>💗</span>
+  </div>
+  <div class="celebration-card" role="dialog" aria-modal="true" aria-labelledby="celebrationTitle">
+    <div class="celebration-cats">😻 😽 😸</div>
+    <div class="celebration-paws">🐾 🐾 🐾</div>
+    <div class="celebration-title" id="celebrationTitle">🎉 500자 수금 완료! 🎉</div>
+    <div class="celebration-sub">오늘의 1/8빡을 완벽하게 납부했지 말입니다!</div>
+    <div class="celebration-applause">👏 👏 👏 👏 👏</div>
+    <div class="celebration-line">고양이파 전원 기립박수 중이지 말입니다.</div>
+    <button class="primary celebration-close" id="celebrationClose" type="button">영광을 누리고 돌아가기</button>
+  </div>
+</div>
+<main class="wrap">
+<header>
+  <div class="title-kicker">호랑이파의 형제 조직 · 고양이파</div>
+  <h1><span class="title-cat" aria-hidden="true">🐈</span>1/8빡 수금소<span class="title-cat mirror" aria-hidden="true">🐈</span></h1>
+  <div class="cat" aria-label="고양이파 수금 담당 😼">😼</div>
+  <p class="subtitle">오늘도 500자만 내면 되시지 말입니다.</p>
+  <div class="header-rule"><span>🐾</span><i></i><span>🐾</span></div>
+</header>
+
+<section class="grid">
+  <div>
+    <div class="card writing-card">
+      <div class="writing-top">
+        <div class="count-zone">
+          <div class="label">오늘의 수금액</div>
+          <div class="count"><span id="count">0</span><small> / 500자</small></div>
+        </div>
+        <div class="timer-zone">
+          <div class="timer-box">
+            <span class="timer-label">수금 시간</span>
+            <div class="timer" id="timer">00:00:00</div>
+          </div>
+          <div class="actions">
+            <button class="primary" id="startBtn">수금 시작</button>
+            <button class="secondary" id="pauseBtn" disabled>정지</button>
+            <button class="danger" id="resetBtn">초기화</button>
+          </div>
+        </div>
+      </div>
+      <div class="bar"><div id="progress"></div></div>
+      <div class="praise" id="message" aria-live="polite">😼 아가씨, 오늘 일수 받으러 왔지 말입니다.</div>
+
+      <h2 class="section-title editor-title">글 쓰는 곳</h2>
+      <textarea id="editor" placeholder="수금할 글을 여기다 작성하시지 말입니다." aria-label="글쓰기"></textarea>
+      <div class="meta"><span id="chars">0자</span><span id="remain">500자 남았지 말입니다.</span></div>
+      <div class="toggle">
+        <input id="spaceMode" type="checkbox">
+        <label for="spaceMode">공백 제외로 수금하기</label>
+      </div>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="tabs" role="tablist">
+      <button class="tab active" id="statsTab" type="button">수금 통계</button>
+      <button class="tab" id="archiveTab" type="button">수금 아카이브</button>
+    </div>
+    <div class="card panel active" id="statsPanel">
+      <h2 class="section-title">😼 고양이파 수금 현황</h2>
+      <div class="tribute-box">
+        <div class="tribute-title">🐾 오늘 추가 상납</div>
+        <div class="tribute-count" id="todayTribute">0자</div>
+        <div class="tribute-detail">
+          <span>현재 글자 수 <b id="tributeCurrent">0자</b></span>
+          <span>이번 상납 <b id="tributePending">0자</b></span>
+        </div>
+        <p class="note">500자를 넘긴 분량만 추가 상납으로 계산하지 말입니다. 이미 기록한 상납분은 다시 세지 않지 말입니다.</p>
+        <button class="secondary" id="tributeBtn" type="button" disabled>추가 상납 기록</button>
+      </div>
+      <p class="note">전날 미납분을 오늘 합산하지는 않지 말입니다. 저희도 양심은 있지 말입니다.</p>
+      <div class="stats-section-gap"></div>
+      <div class="statgrid">
+        <div class="stat"><span class="label">총 수금량</span><b id="totalChars">0자</b></div>
+        <div class="stat"><span class="label">수금 횟수</span><b id="sessions">0회</b></div>
+        <div class="stat"><span class="label">평균 시간</span><b id="avgTime">-</b></div>
+        <div class="stat"><span class="label">최단 기록</span><b id="bestTime">-</b></div>
+      </div>
+      <div class="chart-box">
+        <div class="chart-heading">
+          <div>
+            <div class="chart-title">📈 500자 달성 시간 추이</div>
+            <div class="chart-caption">날짜별로 500자를 완납하기까지 걸린 시간을 기록하지 말입니다.</div>
+          </div>
+        </div>
+        <div class="chart-wrap" id="timeChart">
+          <div class="chart-empty">아직 기록이 부족하지 말입니다.<br>두 번 이상 수금하면 변화가 보이지 말입니다.</div>
+        </div>
+      </div>
+
+
+    </div>
+    <div class="card panel" id="archivePanel">
+      <h2 class="section-title">📚 달성 시간 아카이브</h2>
+      <div class="archive-scroll"><div id="archive"></div></div>
+      <button class="danger" id="clearTodayBtn" type="button" style="margin-top:12px">오늘 기록 초기화</button>
+      <p class="test-note">테스트가 끝나면 오늘 기록을 초기화해서 다시 수금할 수 있지 말입니다. 실제 장부 기록도 함께 삭제되니 주의하시지 말입니다.</p>
+    </div>
+  </aside class="sidebar">
+</section>
+</main>
+
+<script>
+(() => {
+  const KEY = "one-eighth-bbak-settlement-v1";
+  const TARGET = 500;
+  const $ = id => document.getElementById(id);
+  const editor=$("editor"), count=$("count"), progress=$("progress"), message=$("message");
+  const timerEl=$("timer"), startBtn=$("startBtn"), pauseBtn=$("pauseBtn"), resetBtn=$("resetBtn");
+  const spaceMode=$("spaceMode"), chars=$("chars"), remain=$("remain"), logEl=$("log");
+
+  let data = JSON.parse(localStorage.getItem(KEY) || '{"records":[]}');
+  let running=false, paused=false, startAt=0, accumulated=0, raf=null, lastMilestone=0;
+
+  const todayKey = () => {
+    const d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+  };
+  const formatTime = ms => {
+    let s=Math.max(0,Math.floor(ms/1000)), h=Math.floor(s/3600); s%=3600;
+    const m=Math.floor(s/60); s%=60;
+    return [h,m,s].map((v,i)=>String(v).padStart(i===0?2:2,"0")).join(":");
+  };
+  const save=()=>localStorage.setItem(KEY,JSON.stringify(data));
+  const textCount = () => {
+    const raw=editor.value;
+    return spaceMode.checked ? raw.replace(/\s/g,"").length : raw.length;
+  };
+  function todayRecord(){
+    return data.records.find(r=>r.date===todayKey() && r.type==="daily");
+  }
+  function todayTribute(){
+    return data.records.filter(r=>r.date===todayKey() && r.type==="tribute").reduce((a,r)=>a+r.chars,0);
+  }
+  function setMessage(n){
+    if(todayRecord()){ 
+      message.innerHTML='<span class="completion-message"><span>😼 <strong>“오늘 1/8빡은 수금 완료했지 말입니다.”</strong></span><span>더 쓰신 분량은 추가 상납으로 받지 말입니다.</span></span>';
+      return;
+    }
+    const m=Math.floor(n/100)*100;
+    const lines={
+      0:"😼 아가씨, 오늘 일수 받으러 왔지 말입니다.",
+      100:"😼 “100자 받았지 말입니다.” 아주 성실하시지 말입니다.",
+      200:"😼 “200자까지 들어왔지 말입니다.” 제법이지 말입니다.",
+      300:"😼 “300자 수금했지 말입니다.” 슬슬 장사가 잘되지 말입니다.",
+      400:"😼 “400자 받았지 말입니다.” 조금만 더 내놓으시면 되지 말입니다.",
+      500:"😼 “수금 완료했지 말입니다.” 오늘은 이만 가보겠지 말입니다."
+    };
+    message.textContent=lines[Math.min(m,500)] || lines[0];
+  }
+  function renderPerformanceChart(){
+    const target=$("timeChart");
+    if(!target) return;
+    const recs=data.records
+      .filter(r=>r.type==="daily" && Number.isFinite(r.duration))
+      .slice()
+      .sort((a,b)=>a.date.localeCompare(b.date));
+
+    if(recs.length<2){
+      target.innerHTML='<div class="chart-empty">아직 기록이 부족하지 말입니다.<br>두 번 이상 수금하면 변화가 보이지 말입니다.</div>';
+      return;
+    }
+
+    const W=520,H=190,padL=48,padR=14,padT=16,padB=34;
+    const innerW=W-padL-padR, innerH=H-padT-padB;
+    const values=recs.map(r=>Math.max(0,r.duration));
+    const maxV=Math.max(...values,1000);
+    const minV=Math.min(...values);
+    const range=Math.max(maxV-minV,1000);
+    const yMax=minV===maxV ? maxV+1000 : maxV;
+    const yMin=Math.max(0,Math.min(minV,yMax-range));
+    const x=i=>padL+(i/(recs.length-1))*innerW;
+    const y=v=>padT+(1-(v-yMin)/(yMax-yMin))*innerH;
+    const fmtShort=ms=>{
+      const sec=Math.floor(ms/1000);
+      if(sec<60) return sec+"초";
+      const m=Math.floor(sec/60), sec2=sec%60;
+      return m+"분"+(sec2? " "+sec2+"초":"");
+    };
+    const fmtDate=d=>{
+      const parts=d.split("-");
+      return parts[1]+"/"+parts[2];
+    };
+
+    const points=recs.map((r,i)=>[x(i),y(r.duration)]);
+    const line=points.map((p,i)=>(i?"L":"M")+p[0].toFixed(1)+" "+p[1].toFixed(1)).join(" ");
+    const area=line+" L "+points[points.length-1][0].toFixed(1)+" "+(padT+innerH)+" L "+points[0][0].toFixed(1)+" "+(padT+innerH)+" Z";
+
+    const gridVals=[yMin,(yMin+yMax)/2,yMax];
+    const grid=gridVals.map(v=>{
+      const yy=y(v);
+      return `<line class="chart-grid" x1="${padL}" y1="${yy}" x2="${W-padR}" y2="${yy}"></line>
+              <text class="chart-axis-label" x="${padL-7}" y="${yy+3}" text-anchor="end">${fmtShort(v)}</text>`;
+    }).join("");
+
+    // Keep the chart readable as history grows: show first, last, and up to 4 evenly spaced labels.
+    const labelIndexes=new Set([0,recs.length-1]);
+    const step=Math.max(1,Math.ceil((recs.length-1)/4));
+    for(let i=step;i<recs.length-1;i+=step) labelIndexes.add(i);
+    const labels=[...labelIndexes].sort((a,b)=>a-b).map(i=>{
+      return `<text class="chart-axis-label" x="${x(i)}" y="${H-10}" text-anchor="middle">${fmtDate(recs[i].date)}</text>`;
+    }).join("");
+
+    const dots=points.map((p,i)=>{
+      const r=recs[i];
+      return `<circle class="chart-dot" cx="${p[0]}" cy="${p[1]}" r="5"><title>${r.date} · ${fmtShort(r.duration)}</title></circle>`;
+    }).join("");
+
+    target.innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="날짜별 500자 달성 시간 그래프">
+      ${grid}
+      <path class="chart-area" d="${area}"></path>
+      <path class="chart-line" d="${line}"></path>
+      ${dots}
+      ${labels}
+    </svg>`;
+  }
+
+  function renderStats(){
+    const recs=data.records.filter(r=>r.type==="daily");
+    const trib=data.records.filter(r=>r.type==="tribute");
+    $("totalChars").textContent=(recs.length*TARGET+trib.reduce((a,r)=>a+r.chars,0)).toLocaleString()+"자";
+    $("sessions").textContent=recs.length+"회";
+    if(recs.length){
+      const avg=recs.reduce((a,r)=>a+r.duration,0)/recs.length;
+      $("avgTime").textContent=formatTime(avg);
+      $("bestTime").textContent=formatTime(Math.min(...recs.map(r=>r.duration)));
+    } else {$("avgTime").textContent="-";$("bestTime").textContent="-";}
+    const currentCount=textCount();
+    const recordedTribute=todayTribute();
+    const pendingTribute=Math.max(0,currentCount-TARGET-recordedTribute);
+    $("todayTribute").textContent=recordedTribute.toLocaleString()+"자";
+    $("tributeCurrent").textContent=currentCount.toLocaleString()+"자";
+    $("tributePending").textContent=pendingTribute.toLocaleString()+"자";
+    renderPerformanceChart();
+    const rows=data.records.slice().reverse().slice(0,30);
+    $("archive").innerHTML=rows.length ? rows.map((r,i) => {
+      if(r.type==="daily"){
+        return `<div class="archive-row"><div><strong>${r.date}</strong><div class="sub">1/8빡 수금 완료</div></div><strong>${formatTime(r.duration)}</strong><button class="danger delete-record" type="button" data-index="${data.records.indexOf(r)}">삭제</button></div>`;
+      }
+      return `<div class="archive-row"><div><strong>${r.date}</strong><div class="sub">추가 상납 · ${r.chars.toLocaleString()}자</div></div><span>+${r.chars.toLocaleString()}자</span><button class="danger delete-record" type="button" data-index="${data.records.indexOf(r)}">삭제</button></div>`;
+    }).join("") : '<div class="empty">아직 장부가 비어 있지 말입니다.</div>';
+    document.querySelectorAll(".delete-record").forEach(btn=>{
+      btn.addEventListener("click",()=>{
+        const idx=Number(btn.dataset.index);
+        if(confirm("이 수금 기록을 삭제하시지 말입니다?")){
+          data.records.splice(idx,1); save(); renderStats(); render();
+          if(!todayRecord()){startBtn.disabled=false;}
+        }
+      });
+    });
+  }
+
+  function updateTributeState(){
+    const pending=Math.max(0,textCount()-TARGET-todayTribute());
+    $("tributeBtn").disabled=!todayRecord() || pending<=0;
+  }
+
+  function render(){
+    const n=Math.min(textCount(),TARGET);
+    count.textContent=n; chars.textContent=textCount().toLocaleString()+"자";
+    remain.textContent=n>=TARGET?"수금 완료했지 말입니다.":`${TARGET-n}자 남았지 말입니다.`;
+    progress.style.width=(n/TARGET*100)+"%";
+    setMessage(n);
+    updateTributeState();
+    renderStats();
+  }
+  function tick(){
+    if(!running){return}
+    const elapsed=accumulated+(Date.now()-startAt);
+    timerEl.textContent=formatTime(elapsed);
+    raf=requestAnimationFrame(tick);
+  }
+  function start(){
+    if(todayRecord()){message.textContent="오늘 수금은 이미 끝났지 말입니다.";return;}
+    if(!running){
+      running=true; paused=false; startAt=Date.now();
+      startBtn.textContent="수금 중";
+      pauseBtn.disabled=false; pauseBtn.textContent="잠시 정지";
+      tick();
+    }
+  }
+  function pause(){
+    if(!running)return;
+    accumulated += Date.now()-startAt; running=false; paused=true;
+    cancelAnimationFrame(raf); startBtn.textContent="수금 계속";
+    pauseBtn.textContent="정지됨"; timerEl.textContent=formatTime(accumulated);
+  }
+  function reset(){
+    running=false; paused=false; accumulated=0; startAt=0; cancelAnimationFrame(raf);
+    timerEl.textContent="00:00:00"; startBtn.textContent="수금 시작"; pauseBtn.disabled=true; pauseBtn.textContent="잠시 정지";
+    lastMilestone=0; render();
+  }
+  function complete(){
+    const duration=accumulated+(running ? Date.now()-startAt : 0);
+    running=false; cancelAnimationFrame(raf); timerEl.textContent=formatTime(duration);
+    data.records.push({date:todayKey(),duration,type:"daily"});
+    save(); startBtn.disabled=true; pauseBtn.disabled=true;
+    message.innerHTML='😼 <span class="done">“오늘 1/8빡 수금 완료했지 말입니다.”</span>';
+    showCelebration();
+    renderStats();
+  }
+  editor.addEventListener("input",()=>{
+    const n=textCount();
+    const milestone=Math.floor(Math.min(n,TARGET)/100)*100;
+    if(milestone>lastMilestone && milestone>0 && milestone<TARGET){
+      message.textContent={100:"😼 100자 받았지 말입니다. 아주 성실하시지 말입니다.",200:"😼 200자까지 들어왔지 말입니다. 제법이지 말입니다.",300:"😼 300자 수금했지 말입니다. 슬슬 장사가 잘되지 말입니다.",400:"😼 400자 받았지 말입니다. 조금만 더 내놓으시면 되지 말입니다."}[milestone];
+      message.classList.remove("bump"); void message.offsetWidth; message.classList.add("bump");
+      lastMilestone=milestone;
+    }
+    if(n>=TARGET && !todayRecord()){ complete(); }
+    $("tributeBtn").disabled = !todayRecord() || n<=TARGET;
+    render();
+  });
+  spaceMode.addEventListener("change",()=>{lastMilestone=Math.floor(Math.min(textCount(),TARGET)/100)*100;render();});
+  startBtn.addEventListener("click",start); pauseBtn.addEventListener("click",pause);
+  resetBtn.addEventListener("click",()=>{ if(confirm("현재 타이머만 초기화하시지 말입니다?")) reset(); });
+
+  $("tributeBtn").addEventListener("click",()=>{
+    const n=textCount();
+    const extra=Math.max(0,n-TARGET-todayTribute());
+    if(extra<=0 || !todayRecord()) return;
+    data.records.push({date:todayKey(),type:"tribute",chars:extra});
+    save();
+    message.textContent=`😼 ${extra.toLocaleString()}자 추가 상납 받았지 말입니다. 욕심이 생기셨나 보지 말입니다.`;
+    render();
+    updateTributeState();
+  });
+
+  $("statsTab").addEventListener("click",()=>{
+    $("statsTab").classList.add("active"); $("archiveTab").classList.remove("active");
+    $("statsPanel").classList.add("active"); $("archivePanel").classList.remove("active");
+  });
+  $("archiveTab").addEventListener("click",()=>{
+    $("archiveTab").classList.add("active"); $("statsTab").classList.remove("active");
+    $("archivePanel").classList.add("active"); $("statsPanel").classList.remove("active");
+    renderStats();
+  });
+  $("clearTodayBtn").addEventListener("click",()=>{
+    const before=data.records.length;
+    data.records=data.records.filter(r=>r.date!==todayKey());
+    if(data.records.length!==before){
+      save(); reset(); startBtn.disabled=false; $("tributeBtn").disabled=true; renderStats();
+      message.textContent="😼 오늘 장부를 비웠지 말입니다. 다시 수금하셔도 되지 말입니다.";
+    }
+  });
+
+  // 500자 달성 축하 연출
+  const celebration=$("celebration");
+  const celebrationClose=$("celebrationClose");
+  let applauseCtx=null;
+  function playApplause(){
+    try{
+      const AC=window.AudioContext||window.webkitAudioContext;
+      if(!AC)return;
+      applauseCtx=applauseCtx||new AC();
+      const ctx=applauseCtx;
+      if(ctx.state==="suspended")ctx.resume();
+      const now=ctx.currentTime;
+      for(let i=0;i<22;i++){
+        const t=now+i*.055+(Math.random()*.025);
+        const osc=ctx.createOscillator();
+        const gain=ctx.createGain();
+        osc.type="triangle";
+        osc.frequency.setValueAtTime(1100+Math.random()*900,t);
+        gain.gain.setValueAtTime(.0001,t);
+        gain.gain.exponentialRampToValueAtTime(.055,t+.006);
+        gain.gain.exponentialRampToValueAtTime(.0001,t+.045);
+        osc.connect(gain).connect(ctx.destination);
+        osc.start(t); osc.stop(t+.05);
+      }
+    }catch(e){}
+  }
+  function showCelebration(){
+    celebration.classList.add("show");
+    celebration.setAttribute("aria-hidden","false");
+    playApplause();
+    setTimeout(()=>celebrationClose.focus(),80);
+  }
+  function hideCelebration(){
+    celebration.classList.remove("show");
+    celebration.setAttribute("aria-hidden","true");
+  }
+  celebrationClose.addEventListener("click",hideCelebration);
+  celebration.querySelector(".celebration-backdrop").addEventListener("click",hideCelebration);
+  document.addEventListener("keydown",e=>{
+    if(e.key==="Escape" && celebration.classList.contains("show"))hideCelebration();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

@@ -14,13 +14,16 @@
 body{margin:0;background:var(--cream);color:var(--ink);font-family:"Noto Sans KR","Malgun Gothic",sans-serif}
 button,textarea{font:inherit}
 .wrap{width:min(920px,calc(100% - 28px));margin:0 auto;padding:30px 0 50px}
-header{text-align:center;padding:24px 0 34px}
-.title-kicker{display:inline-block;font-size:12px;letter-spacing:.08em;color:var(--muted);padding:7px 13px;border:1px solid var(--line);border-radius:999px;background:#fff9f1;margin-bottom:13px}
-h1{font-family:"Noto Serif KR","Batang","바탕체",Georgia,"Times New Roman",serif;font-size:clamp(38px,7vw,60px);font-weight:700;margin:0;letter-spacing:-1.5px;line-height:1.05;white-space:nowrap}
-.subtitle{margin:18px 0 0;color:var(--muted);font-size:16px}
-.cat{font-size:120px;line-height:.9;margin:18px 0 14px}
-.header-rule{display:flex;align-items:center;justify-content:center;gap:13px;margin:17px auto 0;max-width:310px;color:#b28b72;font-size:20px;line-height:1}
-.header-rule i{height:1px;flex:1;background:var(--line)}
+header{text-align:center;padding:16px 0 23px}
+.title-kicker{display:inline-block;font-size:9.5px;letter-spacing:.08em;color:var(--muted);padding:5px 10px;border:1px solid var(--line);border-radius:999px;background:#fff9f1;margin-bottom:11px}
+h1{font-family:"Noto Serif KR","Batang","바탕체",Georgia,"Times New Roman",serif;font-size:clamp(29px,5.35vw,46px);font-weight:700;margin:0;letter-spacing:-1.28px;line-height:1.05;white-space:nowrap}
+.title-cat{font-size:1.7em;margin:0 .55em;display:inline-block;vertical-align:middle}
+.subtitle{margin:13px 0 0;color:var(--muted);font-size:12.5px}
+.cat{font-size:92px;line-height:.9;margin:13px 0 10px}
+.header-rule{display:flex;align-items:center;justify-content:center;gap:10px;margin:12px auto 0;max-width:448px;color:#9a725a;font-size:15.5px;line-height:1}
+.header-rule i{height:1px;flex:1;background:#d8c1ae}
+.cat-top-rule{margin-top:8px;margin-bottom:-2px}
+.cat-bottom-rule{margin-top:12px;margin-bottom:0}
 .grid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px;align-items:start}
 .card{background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:22px;box-shadow:var(--shadow)}
  .writing-card{padding:22px 24px}
@@ -73,7 +76,7 @@ textarea:focus{border-color:var(--brown2);box-shadow:0 0 0 3px rgba(166,123,96,.
 }
 @media(max-width:430px){
   .wrap{width:min(100% - 18px,920px)}
-  .title-cat{font-size:.5em;margin:0 .1em}
+  .title-cat{font-size:1.5em;margin:0 .42em;display:inline-block}
   .count{font-size:34px}.count span{width:62px}
   .timer{font-size:21px;letter-spacing:.8px;margin-bottom:6px}
   .actions button{font-size:11px}
@@ -81,7 +84,7 @@ textarea:focus{border-color:var(--brown2);box-shadow:0 0 0 3px rgba(166,123,96,.
 }
 @media(max-width:430px){
   .wrap{width:min(100% - 18px,920px)}
-  .title-cat{font-size:.5em;margin:0 .1em}
+  .title-cat{font-size:1.5em;margin:0 .42em}
   .timer{font-size:18px}
   .actions button{font-size:11px}
   textarea{min-height:300px}
@@ -158,6 +161,7 @@ textarea:focus{border-color:var(--brown2);box-shadow:0 0 0 3px rgba(166,123,96,.
 .chart-dot{fill:#8b5e46;stroke:#fffaf3;stroke-width:3}
 .chart-empty{height:100%;display:flex;align-items:center;justify-content:center;text-align:center;color:var(--muted);font-size:12px;line-height:1.7}
 .stats-section-gap{height:12px}
+.right-guard{display:inline-block;transform:scaleX(-1);-webkit-transform:scaleX(-1);transform-origin:center;}
 </style>
 </head>
 <body>
@@ -179,11 +183,12 @@ textarea:focus{border-color:var(--brown2);box-shadow:0 0 0 3px rgba(166,123,96,.
 </div>
 <main class="wrap">
 <header>
+  <div class="header-rule cat-top-rule"><span>🐾</span><i></i><span>🐾</span></div>
   <div class="title-kicker">호랑이파의 형제 조직 · 고양이파</div>
-  <h1><span class="title-cat" aria-hidden="true">🐈</span>1/8빡 수금소<span class="title-cat mirror" aria-hidden="true">🐈</span></h1>
+  <h1><span class="title-cat" aria-hidden="true">🐈</span>1/8빡 수금소<span class="title-cat right-guard" aria-hidden="true">🐈</span></h1>
   <div class="cat" aria-label="고양이파 수금 담당 😼">😼</div>
   <p class="subtitle">오늘도 500자만 내면 되시지 말입니다.</p>
-  <div class="header-rule"><span>🐾</span><i></i><span>🐾</span></div>
+  <div class="header-rule cat-bottom-rule"><span>🐾</span><i></i><span>🐾</span></div>
 </header>
 
 <section class="grid">
